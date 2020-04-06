@@ -1,0 +1,82 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(Collider))]
+
+public class ROT : MonoBehaviour
+{
+
+    public float rot;
+    public float rot_max = 100f;
+    public float rot_acc = 1f;
+    public bool STATE;
+
+    AudioSource mAudioSource;
+
+    //Play the music
+    bool m_Play;
+    //Detect when you use the toggle, ensures music isn’t played multiple times
+    bool m_Playing;
+
+    void Start()
+    {
+
+        mAudioSource = GetComponent<AudioSource>();
+
+        m_Play = true;
+        STATE = false;
+    }
+
+    void FixedUpdate()
+    {
+
+        if (STATE)
+        {
+            if (rot < rot_max-rot_acc) { rot += rot_acc; }
+            Debug.Log(rot + "rot");
+            transform.Rotate(0, 0, Time.deltaTime*rot);
+
+
+        }
+        else 
+        {
+            if (rot > 0 + rot_acc) { rot -= rot_acc; }
+            if (rot < 1) { rot = 0; }
+            transform.Rotate(0, 0, Time.deltaTime * rot);
+        }
+
+        if(m_Play)
+        {
+            mAudioSource.volume = rot / rot_max;
+            mAudioSource.pitch = rot / rot_max;
+
+        }
+
+
+    }
+
+
+
+    private void Update()
+    {
+        
+        //toggler
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject == gameObject)
+                {
+
+
+                    STATE = !STATE;
+                    Debug.Log(STATE + "STATE");
+
+                }
+            }
+        }
+    }
+}
