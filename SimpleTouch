@@ -1,0 +1,110 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(Collider))]
+
+public class SimpleTouch : MonoBehaviour
+{
+    public GameObject parent;
+
+    public float rot;
+    public float rot_max;
+    public float mWheel_sensitivity;
+    public float rot_acc;
+    void Update()
+    {
+        mWheel_sensitivity = parent.GetComponent<ROT>().mWheel_sensitivity;
+        rot = parent.GetComponent<ROT>().rot;
+        rot_max = parent.GetComponent<ROT>().rot_max;
+        rot_acc = parent.GetComponent<ROT>().rot_acc;
+
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject == gameObject)
+                {
+
+
+                    parent.GetComponent<ROT>().STATE = !parent.GetComponent<ROT>().STATE;
+                    Debug.Log("Hit me in the eye!");
+                }
+            }
+        }
+
+
+        //rot_max speed down && up - with mousewheel
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject == gameObject)
+                {
+                    if (rot_max > 10) { parent.GetComponent<ROT>().rot_max += (Input.GetAxis("Mouse ScrollWheel") * mWheel_sensitivity); }
+                    Debug.Log("csokken");
+                }
+            }
+        }
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject == gameObject)
+                {
+                     parent.GetComponent<ROT>().rot_max += (Input.GetAxis("Mouse ScrollWheel") * mWheel_sensitivity);
+                    Debug.Log("novel");
+                }
+            }
+        }
+
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.gameObject == gameObject)
+                {
+
+                    //rot_max speed down && up - with mousewheel
+                    if (Input.GetAxis("Mouse ScrollWheel") < 0)
+                    {
+
+                        if (Physics.Raycast(ray, out hit))
+                        {
+                            if (hit.collider.gameObject == gameObject)
+                            {
+                                if (rot_acc > 0) { parent.GetComponent<ROT>().rot_acc += Input.GetAxis("Mouse ScrollWheel"); }
+                                Debug.Log("csokken rot_acc");
+                            }
+                        }
+                    }
+
+                    if (Input.GetAxis("Mouse ScrollWheel") > 0)
+                    {
+
+                        if (Physics.Raycast(ray, out hit))
+                        {
+                            if (hit.collider.gameObject == gameObject)
+                            {
+                                parent.GetComponent<ROT>().rot_acc += Input.GetAxis("Mouse ScrollWheel");
+                                Debug.Log("novel rot_acc");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } //update() ends
+
+}
